@@ -1,121 +1,210 @@
-/* One Household, One Month — a giant shopping receipt pinned to a cork board.
-   Monospace print, dotted leader lines, torn zig-zag edges, red ink stamps,
-   and the savings goals as little pinned notes beside the main receipt. */
+/* One Household, One Month — a cork board with papers pinned to it.
+   Composition follows the approved mockup: a slim cream top bar, a crumpled
+   notebook page on the left, the big monthly receipt in the centre with a
+   red ink stamp overlapping its corner, and the savings goals as small
+   coloured notes pinned on the right. */
 :root {
   --paper: #fffdf4;
-  --paper-shade: #f7efdb;
   --ink: #33302a;
   --muted: #8a8172;
   --stamp-red: #b3372a;
-  --cork-1: #b98a5a;
-  --cork-2: #a1763f;
   --line: #d8cfb8;
+  --hand: 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive;
+  --mono: 'Courier New', Courier, monospace;
 }
 * { box-sizing: border-box; }
 body {
   margin: 0;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: var(--mono);
   color: var(--ink);
-  /* The cork board: warm brown with a fine speckle of cork flecks. */
-  background-color: var(--cork-1);
+  /* The cork board: warm cork tones with a dense fleck speckle, no stripes. */
+  background-color: #b0824f;
   background-image:
-    radial-gradient(circle at 12% 22%, rgba(90, 58, 26, .35) 0 2px, transparent 3px),
-    radial-gradient(circle at 68% 8%, rgba(255, 226, 178, .30) 0 2px, transparent 3px),
-    radial-gradient(circle at 84% 46%, rgba(90, 58, 26, .28) 0 3px, transparent 4px),
-    radial-gradient(circle at 30% 64%, rgba(255, 226, 178, .22) 0 2px, transparent 3px),
-    radial-gradient(circle at 52% 88%, rgba(90, 58, 26, .30) 0 2px, transparent 3px),
-    radial-gradient(circle at 93% 78%, rgba(255, 226, 178, .25) 0 3px, transparent 4px),
-    repeating-linear-gradient(37deg, rgba(122, 82, 40, .12) 0 14px, transparent 14px 28px),
-    linear-gradient(160deg, var(--cork-1), var(--cork-2));
-  background-size: 190px 190px, 240px 240px, 210px 210px, 260px 260px, 200px 200px, 230px 230px, auto, auto;
-  padding: 34px 14px 44px;
+    radial-gradient(circle at 8% 12%, rgba(84, 54, 22, .40) 0 2px, transparent 3.5px),
+    radial-gradient(circle at 22% 68%, rgba(255, 228, 175, .35) 0 2px, transparent 3.5px),
+    radial-gradient(circle at 37% 30%, rgba(84, 54, 22, .32) 0 3px, transparent 4.5px),
+    radial-gradient(circle at 51% 82%, rgba(255, 228, 175, .28) 0 2px, transparent 3.5px),
+    radial-gradient(circle at 63% 18%, rgba(84, 54, 22, .36) 0 2px, transparent 3.5px),
+    radial-gradient(circle at 76% 55%, rgba(255, 228, 175, .32) 0 3px, transparent 4.5px),
+    radial-gradient(circle at 88% 26%, rgba(84, 54, 22, .30) 0 2px, transparent 3.5px),
+    radial-gradient(circle at 95% 74%, rgba(255, 228, 175, .30) 0 2px, transparent 3.5px),
+    radial-gradient(circle at 44% 48%, rgba(84, 54, 22, .22) 0 4px, transparent 6px),
+    radial-gradient(circle at 16% 90%, rgba(84, 54, 22, .34) 0 3px, transparent 4.5px),
+    linear-gradient(155deg, #bd8f58, #a1763f 70%, #96692f);
+  background-size: 170px 170px, 210px 210px, 240px 240px, 190px 190px, 220px 220px, 260px 260px, 200px 200px, 230px 230px, 300px 300px, 250px 250px, auto;
+  min-height: 100vh;
 }
 
-/* ---------- the receipt sheet ---------- */
-.receipt {
-  position: relative;
-  max-width: 1020px;
-  margin: 0 auto;
-  background: var(--paper);
-  box-shadow: 0 14px 34px rgba(46, 28, 8, .45), 0 3px 8px rgba(46, 28, 8, .35);
-  padding: 10px 0 6px;
+/* ---------- slim cream top bar ---------- */
+.topbar {
+  display: flex; align-items: center; gap: 26px; flex-wrap: wrap;
+  background: #faf3e3; border-bottom: 1px solid #d9c9a8;
+  padding: 10px 22px; box-shadow: 0 2px 8px rgba(46, 28, 8, .25);
+  position: relative; z-index: 5;
 }
-/* torn zig-zag tear edges, top and bottom */
-.receipt::before, .receipt::after {
-  content: ""; position: absolute; left: 0; right: 0; height: 12px;
+.brand { display: flex; align-items: center; gap: 9px; font-size: 21px; font-weight: bold; color: #4a3421; letter-spacing: .3px; }
+.brand svg { display: block; }
+.topnav { display: flex; gap: 20px; flex-wrap: wrap; }
+.topnav a { text-decoration: none; color: #4a3421; font-size: 15px; padding: 3px 2px; }
+.topnav a.active { font-weight: bold; border-bottom: 2px solid #4a3421; }
+.topbar .month-tag { margin-left: auto; color: var(--muted); font-size: 14px; }
+
+/* ---------- the board (dashboard composition) ---------- */
+.board {
+  display: grid; grid-template-columns: 288px minmax(0, 1fr) 288px;
+  gap: 30px; max-width: 1280px; margin: 0 auto; padding: 34px 22px 56px;
+  align-items: start;
+}
+@media (max-width: 1020px) { .board { grid-template-columns: 1fr 1fr; } .receipt-col { grid-column: 1 / -1; order: -1; } }
+@media (max-width: 680px) { .board { grid-template-columns: 1fr; } }
+
+/* crumpled paper texture shared by the notebook page and the receipt */
+.crumpled {
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(ellipse 220px 90px at 18% 12%, rgba(120, 100, 60, .10), transparent 70%),
+    radial-gradient(ellipse 260px 120px at 82% 30%, rgba(120, 100, 60, .08), transparent 70%),
+    radial-gradient(ellipse 200px 100px at 40% 78%, rgba(120, 100, 60, .10), transparent 70%),
+    radial-gradient(ellipse 300px 140px at 70% 92%, rgba(120, 100, 60, .07), transparent 70%),
+    linear-gradient(24deg, transparent 46%, rgba(120, 100, 60, .06) 49%, transparent 53%),
+    linear-gradient(-18deg, transparent 62%, rgba(120, 100, 60, .05) 65%, transparent 69%);
+  box-shadow: 0 12px 26px rgba(46, 28, 8, .42), 0 3px 7px rgba(46, 28, 8, .30);
+}
+/* torn zig-zag bottom edge for a paper */
+.torn { position: relative; }
+.torn::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -10px; height: 11px;
   background:
     linear-gradient(45deg, transparent 33.333%, var(--paper) 33.333%, var(--paper) 66.667%, transparent 66.667%),
     linear-gradient(-45deg, transparent 33.333%, var(--paper) 33.333%, var(--paper) 66.667%, transparent 66.667%);
-  background-size: 16px 32px;
+  background-size: 15px 30px;
 }
-.receipt::before { top: -11px; transform: rotate(180deg); }
-.receipt::after { bottom: -11px; }
-/* brass pins through the top corners */
-header.top::before, header.top::after {
-  content: ""; position: absolute; top: -24px; width: 22px; height: 22px; border-radius: 50%;
+
+/* LEFT: the notebook page, spiral holes down its left edge */
+.notebook {
+  position: relative; transform: rotate(-1.1deg);
+  padding: 26px 20px 30px 46px; min-height: 340px;
+}
+.notebook::before {
+  /* the punched spiral holes: dark cork showing through, evenly spaced */
+  content: ""; position: absolute; top: 8px; bottom: 8px; left: 9px; width: 20px;
+  background-image: radial-gradient(circle at 10px 10px, #5d3c1c 5.5px, rgba(46, 28, 8, .35) 7px, transparent 8.5px);
+  background-size: 20px 34px; background-repeat: repeat-y;
+}
+.notebook::after {
+  /* a brass pin at the top corner */
+  content: ""; position: absolute; top: -11px; left: 22px; width: 22px; height: 22px; border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #ffe9a8, #c9962e 55%, #7d5a14);
   box-shadow: 0 3px 5px rgba(46, 28, 8, .5);
-  z-index: 3;
 }
-header.top::before { left: 26px; }
-header.top::after { right: 26px; }
+.notebook h1 { font-family: var(--hand); font-size: 34px; line-height: 1.25; margin: 4px 0 18px; font-weight: normal; }
+.notebook p { font-family: var(--hand); font-size: 17px; line-height: 1.55; margin: 0 0 10px; color: #4c463c; }
+.notebook .dotline { border-bottom: 2px dotted #b6ab90; margin: 14px 0; }
 
-header.top {
-  position: relative;
-  text-align: center;
-  padding: 16px 20px 10px;
-  border-bottom: 3px double var(--ink);
-  margin: 0 26px;
+/* CENTRE: the big receipt */
+.receipt-col { position: relative; }
+.receipt {
+  position: relative; transform: rotate(.35deg);
+  padding: 30px 34px 26px;
 }
-header.top h1 {
-  margin: 0 0 4px; font-size: 27px; letter-spacing: 2px; text-transform: uppercase;
+.receipt::before, .receipt::after {
+  /* brass pins through the top corners */
+  content: ""; position: absolute; top: -12px; width: 23px; height: 23px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffe9a8, #c9962e 55%, #7d5a14);
+  box-shadow: 0 3px 5px rgba(46, 28, 8, .5); z-index: 3;
 }
-header.top p { margin: 0; color: var(--muted); font-size: 15px; letter-spacing: 1px; }
+.receipt::before { left: 20px; }
+.receipt::after { right: 20px; }
+.receipt h1 { text-align: center; font-size: 21px; letter-spacing: 1.5px; margin: 2px 0 4px; text-transform: uppercase; }
+.receipt .period { text-align: center; font-size: 14px; letter-spacing: 2px; color: #55503f; margin: 0 0 6px; text-transform: uppercase; }
+.rule-dash { border-bottom: 2px dashed #6d675a; margin: 10px 0; }
+.rule-dot { border-bottom: 2px dotted #a79c83; margin: 8px 0; }
+.receipt h3 { font-size: 15px; letter-spacing: 2px; margin: 14px 0 6px; text-transform: uppercase; }
+.rline { display: flex; align-items: flex-end; gap: 8px; padding: 3.5px 0; font-size: 15px; }
+.rline .leader { flex: 1; border-bottom: 2px dotted #a79c83; margin-bottom: 4px; }
+.rline .amt { font-weight: bold; }
+.rline.total { font-size: 17px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+.receipt .calc-line { text-align: left; font-size: 13px; color: #55503f; margin-top: 14px; letter-spacing: .5px; padding-right: 165px; }
+@media (max-width: 680px) { .receipt .calc-line { padding-right: 110px; } }
+.receipt .chart-row { display: grid; grid-template-columns: auto 1fr; gap: 8px 22px; align-items: center; margin-top: 6px; }
+@media (max-width: 560px) { .receipt .chart-row { grid-template-columns: 1fr; } }
 
-nav.pills {
-  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
-  padding: 14px 20px 2px;
+/* the big red stamp, overlapping the receipt's bottom-right corner onto the cork */
+.stamp-lg {
+  position: absolute; right: -34px; bottom: -30px; z-index: 4;
+  width: 178px; height: 178px; border: 4px double var(--stamp-red); border-radius: 50%;
+  color: var(--stamp-red); text-align: center; transform: rotate(-11deg); opacity: .9;
+  padding-top: 44px; font-weight: bold; letter-spacing: 3px; font-size: 17px; line-height: 1.3;
+  background: radial-gradient(circle, rgba(255, 253, 244, .20), transparent 70%);
 }
-nav.pills a {
-  text-decoration: none; color: var(--ink);
-  background: var(--paper-shade); border: 1px dashed var(--muted);
-  padding: 7px 14px; font-size: 14px; letter-spacing: 1px; text-transform: uppercase;
-}
-nav.pills a.active { background: var(--stamp-red); border: 1px solid var(--stamp-red); color: #fff; font-weight: bold; }
+.stamp-lg .stamp-big { font-size: 40px; letter-spacing: 0; }
+@media (max-width: 680px) { .stamp-lg { right: -6px; bottom: -24px; width: 148px; height: 148px; padding-top: 36px; } .stamp-lg .stamp-big { font-size: 33px; } }
 
-main { padding: 8px 26px 8px; }
+/* RIGHT: the goal notes */
+.goal-notes { display: flex; flex-direction: column; gap: 26px; padding-top: 6px; }
+.note-card {
+  --note: #fdf3b8;
+  position: relative; background: var(--note); padding: 20px 18px 16px;
+  box-shadow: 0 8px 18px rgba(46, 28, 8, .38); font-size: 14.5px;
+}
+.note-card:nth-child(1) { --note: #fdf3b8; transform: rotate(1.4deg); }
+.note-card:nth-child(2) { --note: #dceefb; transform: rotate(-1.2deg); }
+.note-card:nth-child(3) { --note: #fbe3ec; transform: rotate(1deg); }
+.note-card::before {
+  /* the red push pin */
+  content: ""; position: absolute; top: -11px; left: 26px; width: 21px; height: 21px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffb3a3, var(--stamp-red) 60%, #7e1f16);
+  box-shadow: 0 3px 4px rgba(46, 28, 8, .45); z-index: 2;
+}
+.note-card::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -9px; height: 10px;
+  background:
+    linear-gradient(45deg, transparent 33.333%, var(--note) 33.333%, var(--note) 66.667%, transparent 66.667%),
+    linear-gradient(-45deg, transparent 33.333%, var(--note) 33.333%, var(--note) 66.667%, transparent 66.667%);
+  background-size: 14px 28px;
+}
+.note-card h3 { margin: 2px 0 8px; font-size: 15.5px; letter-spacing: 1px; text-transform: uppercase; line-height: 1.4; }
+.note-card p { margin: 3px 0; }
+.note-card .bar { height: 9px; background: rgba(255, 255, 255, .65); border: 1px solid rgba(51, 48, 42, .35); margin: 9px 0 5px; }
+.note-card .bar > div { height: 100%; background: rgba(51, 48, 42, .85); }
+
+/* ---------- pinned sheet pages (Planner / Bills / Goals) ---------- */
+.sheet {
+  position: relative; max-width: 1060px; margin: 34px auto 56px;
+  padding: 26px 30px 22px; transform: rotate(.2deg);
+}
+.sheet::before, .sheet::after {
+  content: ""; position: absolute; top: -12px; width: 23px; height: 23px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffe9a8, #c9962e 55%, #7d5a14);
+  box-shadow: 0 3px 5px rgba(46, 28, 8, .5); z-index: 3;
+}
+.sheet::before { left: 24px; }
+.sheet::after { right: 24px; }
+.sheet > h1 { text-align: center; font-size: 24px; letter-spacing: 2px; text-transform: uppercase; margin: 4px 0 4px; }
+.sheet > .lede { text-align: center; color: var(--muted); margin: 0 0 8px; font-size: 15px; }
+.sheet-wrap { padding: 0 16px; }
+footer.board-foot { color: #fdf6df; text-align: center; font-size: 12.5px; letter-spacing: 1px; padding: 0 16px 26px; text-shadow: 0 1px 3px rgba(46,28,8,.6); }
+
+/* shared pieces inside the papers */
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0; }
-.card {
-  background: transparent; border: 0; border-bottom: 2px dashed var(--line);
-  padding: 11px 14px;
-}
+.card { background: transparent; border: 0; border-bottom: 2px dashed var(--line); padding: 11px 14px; }
 .cards .card { border-bottom: 0; border-right: 2px dashed var(--line); }
 .cards .card:last-child { border-right: 0; }
 @media (max-width: 760px) { .cards .card { border-right: 0; border-bottom: 2px dashed var(--line); } }
 .card .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
-.card .big { font-size: 31px; font-weight: bold; margin: 4px 0 2px; }
+.card .big { font-size: 29px; font-weight: bold; margin: 4px 0 2px; }
 .card .sub { color: var(--muted); font-size: 13px; }
 h2 { font-size: 19px; margin: 14px 0 8px; text-transform: uppercase; letter-spacing: 2px; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
 @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
-
-/* dotted leader lines between a name and its number */
-.legend { list-style: none; margin: 0; padding: 0; font-size: 15px; }
-.legend li { display: flex; align-items: flex-end; gap: 8px; padding: 3px 0; }
-.legend .leader { flex: 1; border-bottom: 2px dotted #a79c83; margin-bottom: 4px; }
-.legend .dot { width: 12px; height: 12px; border-radius: 2px; display: inline-block; margin-bottom: 3px; }
-.legend .amt { font-weight: bold; }
-
 .bar-row { display: grid; grid-template-columns: 96px 1fr 96px; gap: 10px; align-items: center; margin: 9px 0; font-size: 14px; }
 .bar-track { background: repeating-linear-gradient(45deg, #efe7d0 0 8px, #e7dcc2 8px 16px); height: 16px; border: 1px solid var(--line); }
 .bar-fill { height: 100%; }
-
 table { width: 100%; border-collapse: collapse; font-size: 15px; }
 th, td { padding: 7px 6px; border-bottom: 2px dotted #c9bfa5; text-align: left; }
 th { text-transform: uppercase; letter-spacing: 1px; font-size: 13px; border-bottom: 2px dashed var(--ink); }
 td.num, th.num { text-align: right; }
 tfoot th { border-bottom: 0; border-top: 3px double var(--ink); }
-
 input[type="number"], select {
   width: 110px; padding: 6px 8px; font-size: 16px; font-family: inherit; font-weight: bold;
   color: var(--ink); background: #fffef9;
@@ -131,31 +220,17 @@ button {
   text-transform: uppercase; letter-spacing: 1px; transform: rotate(-.5deg);
 }
 button.secondary { color: var(--ink); border-color: var(--ink); transform: rotate(.5deg); }
-
 .progress { background: repeating-linear-gradient(45deg, #f1e9d2 0 8px, #e9dfc4 8px 16px); height: 15px; border: 1px solid var(--line); margin: 8px 0; }
 .progress > div { height: 100%; background: var(--stamp-red); opacity: .75; }
-
 .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
 .calendar .dow { font-size: 11px; color: var(--muted); text-align: center; text-transform: uppercase; letter-spacing: 1px; }
-.calendar .day {
-  background: #fffef9; border: 1px dashed #c9bfa5;
-  min-height: 62px; padding: 5px; font-size: 13px;
-}
+.calendar .day { background: #fffef9; border: 1px dashed #c9bfa5; min-height: 62px; padding: 5px; font-size: 13px; }
 .calendar .day.empty { background: transparent; border: 0; }
 .calendar .day .bill { display: block; margin-top: 4px; color: var(--stamp-red); font-size: 11px; font-weight: bold; }
-
-/* the red ink stamp */
-.stamp {
-  display: inline-block; color: var(--stamp-red); border: 3px double var(--stamp-red);
-  border-radius: 50%; width: 118px; height: 118px; text-align: center;
-  transform: rotate(-11deg); opacity: .88; padding-top: 25px;
-  font-weight: bold; letter-spacing: 2px; font-size: 13px; line-height: 1.25;
-  mask-image: radial-gradient(circle, #000 78%, rgba(0,0,0,.75) 100%);
-}
-.stamp .stamp-big { font-size: 25px; letter-spacing: 0; }
-
-/* savings goals: little torn notes pinned beside the receipt */
-#goal-cards { gap: 18px; }
+.note { color: var(--muted); font-size: 13px; }
+.warn { color: var(--stamp-red); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+/* goals page: its cards are the same pinned notes, laid out in a row */
+#goal-cards { gap: 20px; padding-top: 14px; }
 #goal-cards .card {
   --note: #fdf3b8;
   position: relative; background: var(--note); border: 0;
@@ -179,16 +254,3 @@ button.secondary { color: var(--ink); border-color: var(--ink); transform: rotat
 }
 #goal-cards .progress { background: rgba(255,255,255,.55); border-color: rgba(90, 70, 30, .25); }
 #goal-cards .progress > div { background: var(--ink); opacity: .65; }
-
-footer {
-  color: var(--muted); font-size: 12px; text-align: center; letter-spacing: 1px;
-  padding: 20px 26px 16px; margin: 10px 26px 14px; border-top: 3px double var(--ink);
-}
-/* a printed barcode along the foot of the receipt */
-footer::after {
-  content: ""; display: block; height: 34px; margin: 12px auto 2px; max-width: 340px;
-  background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 5px, var(--ink) 5px 8px, transparent 8px 11px, var(--ink) 11px 12px, transparent 12px 17px);
-  opacity: .8;
-}
-.note { color: var(--muted); font-size: 13px; }
-.warn { color: var(--stamp-red); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }

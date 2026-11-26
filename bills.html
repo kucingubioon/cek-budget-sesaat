@@ -7,18 +7,24 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="receipt">
-<header class="top">
-  <h1>Bills &amp; Fixed Costs</h1>
-  <p>The bills that arrive whether the month is good or not.</p>
+<header class="topbar">
+  <span class="brand">
+    <svg width="26" height="24" viewBox="0 0 26 24" aria-hidden="true"><path d="M13 1 L25 11 H21 V23 H15 V16 H11 V23 H5 V11 H1 Z" fill="#4a3421"/></svg>
+    One Household
+  </span>
+  <nav class="topnav">
+    <a href="index.html">Dashboard</a>
+    <a href="planner.html">Planner</a>
+    <a href="bills.html" class="active">Bills</a>
+    <a href="goals.html">Goals</a>
+  </nav>
+  <span class="month-tag">Nov 2026</span>
 </header>
-<nav class="pills">
-  <a href="index.html">Dashboard</a>
-  <a href="planner.html">Budget Planner</a>
-  <a href="bills.html" class="active">Bills &amp; Fixed Costs</a>
-  <a href="goals.html">Savings Goals</a>
-</nav>
-<main>
+<div class="sheet-wrap">
+<main class="sheet crumpled torn">
+  <h1>Bills &amp; Fixed Costs</h1>
+  <p class="lede">The bills that arrive whether the month is good or not.</p>
+  <div class="rule-dash"></div>
   <section class="cards" id="bill-summary"></section>
   <div class="grid2">
     <section class="card">
@@ -37,7 +43,8 @@
     </section>
   </div>
 </main>
-<footer>One Household, One Month — bills and amounts are the example month from the same household data as every other page.</footer>
+</div>
+<footer class="board-foot">One Household · Nov 2026 · Bills and amounts are the example month from the same household data as every other page.</footer>
 <script src="data.js"></script>
 <script>
 const d = window.HOUSEHOLD, M = window.BudgetMath;
@@ -69,6 +76,5 @@ for (let day = 1; day <= daysInMonth; day++) {
 }
 document.getElementById('calendar').innerHTML = cells;
 </script>
-</div>
 </body>
 </html>

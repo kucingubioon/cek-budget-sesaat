@@ -7,18 +7,24 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="receipt">
-<header class="top">
-  <h1>Savings Goals</h1>
-  <p>What the left-over money is actually for.</p>
+<header class="topbar">
+  <span class="brand">
+    <svg width="26" height="24" viewBox="0 0 26 24" aria-hidden="true"><path d="M13 1 L25 11 H21 V23 H15 V16 H11 V23 H5 V11 H1 Z" fill="#4a3421"/></svg>
+    One Household
+  </span>
+  <nav class="topnav">
+    <a href="index.html">Dashboard</a>
+    <a href="planner.html">Planner</a>
+    <a href="bills.html">Bills</a>
+    <a href="goals.html" class="active">Goals</a>
+  </nav>
+  <span class="month-tag">Nov 2026</span>
 </header>
-<nav class="pills">
-  <a href="index.html">Dashboard</a>
-  <a href="planner.html">Budget Planner</a>
-  <a href="bills.html">Bills &amp; Fixed Costs</a>
-  <a href="goals.html" class="active">Savings Goals</a>
-</nav>
-<main>
+<div class="sheet-wrap">
+<main class="sheet crumpled torn">
+  <h1>Savings Goals</h1>
+  <p class="lede">What the left-over money is actually for.</p>
+  <div class="rule-dash"></div>
   <section class="cards" id="goal-cards"></section>
 
   <section class="card" style="margin-top:14px">
@@ -33,7 +39,8 @@
     <p class="note">This household currently keeps <span id="leftover-note"></span> a month. Split across goals, the emergency fund comes first — it is the one that turns a bad month into a merely annoying one.</p>
   </section>
 </main>
-<footer>One Household, One Month — goal figures come from the same household data as every other page.</footer>
+</div>
+<footer class="board-foot">One Household · Nov 2026 · Goal figures come from the same household data as every other page.</footer>
 <script src="data.js"></script>
 <script>
 const d = window.HOUSEHOLD, M = window.BudgetMath;
@@ -70,6 +77,5 @@ pick.addEventListener('change', calc);
 monthly.addEventListener('input', calc);
 calc();
 </script>
-</div>
 </body>
 </html>

@@ -7,60 +7,96 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="receipt">
-<header class="top">
-  <h1>One Household, One Month</h1>
-  <p id="month-line">The whole month on one page — November 2026</p>
+<header class="topbar">
+  <span class="brand">
+    <svg width="26" height="24" viewBox="0 0 26 24" aria-hidden="true"><path d="M13 1 L25 11 H21 V23 H15 V16 H11 V23 H5 V11 H1 Z" fill="#4a3421"/></svg>
+    One Household
+  </span>
+  <nav class="topnav">
+    <a href="index.html" class="active">Dashboard</a>
+    <a href="planner.html">Planner</a>
+    <a href="bills.html">Bills</a>
+    <a href="goals.html">Goals</a>
+  </nav>
+  <span class="month-tag">Nov 2026</span>
 </header>
-<nav class="pills">
-  <a href="index.html" class="active">Dashboard</a>
-  <a href="planner.html">Budget Planner</a>
-  <a href="bills.html">Bills &amp; Fixed Costs</a>
-  <a href="goals.html">Savings Goals</a>
-</nav>
-<main>
-  <section class="cards" id="summary-cards"></section>
 
-  <div class="grid2">
-    <section class="card">
-      <h2 style="margin-top:0">Where the money goes</h2>
-      <div style="display:flex; gap:18px; align-items:center; flex-wrap:wrap">
-        <svg id="donut" width="158" height="158" viewBox="0 0 190 190" role="img" aria-label="Spending by category donut chart"></svg>
-        <ul class="legend" id="donut-legend" style="flex:1; min-width:200px"></ul>
+<div class="board">
+  <!-- LEFT: the notebook page -->
+  <aside class="notebook crumpled torn">
+    <h1>One Household,<br>One Month</h1>
+    <p>November 2026 — Monthly Budget</p>
+    <p id="left-saved-line">You saved 18.8% this month!</p>
+    <div class="dotline"></div>
+    <p>Money in: <span id="left-in"></span></p>
+    <p>Money out: <span id="left-out"></span></p>
+    <p>Kept: <span id="left-kept"></span></p>
+    <div class="dotline"></div>
+    <p>Rent is the big one. Groceries behave. The holiday fund is getting there.</p>
+  </aside>
+
+  <!-- CENTRE: the monthly receipt -->
+  <div class="receipt-col">
+    <main class="receipt crumpled torn">
+      <h1>One Household — Monthly Receipt</h1>
+      <p class="period">Period: Nov 01 — Nov 30, 2026</p>
+      <div class="rule-dash"></div>
+
+      <h3>Income:</h3>
+      <div class="rline"><span>Household income</span><span class="leader"></span><span class="amt" id="rc-income"></span></div>
+      <div class="rline total"><span>Total income</span><span class="leader"></span><span class="amt" id="rc-total-income"></span></div>
+      <div class="rule-dash"></div>
+
+      <h3>Expenses:</h3>
+      <div id="rc-expenses"></div>
+      <div class="rule-dash"></div>
+      <div class="rline total"><span>Total spent</span><span class="leader"></span><span class="amt" id="rc-total-spent"></span></div>
+      <div class="rline total"><span>Net saved</span><span class="leader"></span><span class="amt" id="rc-net-saved"></span></div>
+      <div class="rule-dash"></div>
+
+      <div class="chart-row">
+        <svg id="donut" width="150" height="150" viewBox="0 0 190 190" role="img" aria-label="Spending by category donut chart"></svg>
+        <div>
+          <h3 style="margin-top:0">The 50/30/20 check</h3>
+          <div id="rule-bars"></div>
+          <p class="note" id="rule-verdict" style="margin-bottom:4px"></p>
+          <p class="note" id="fixed-note"></p>
+        </div>
       </div>
-    </section>
-    <section class="card">
-      <h2 style="margin-top:0">The 50/30/20 check</h2>
-      <p class="note">A common rule of thumb: 50% of income on needs, 30% on wants, 20% into savings. Here is this household, side by side.</p>
-      <div id="rule-bars"></div>
-      <p id="rule-verdict"></p>
-      <p class="note" id="fixed-note"></p>
-      <div style="text-align:center; padding:8px 0 4px"><span class="stamp" id="stamp">SAVED<br><span class="stamp-big">—</span></span></div>
-    </section>
+      <p class="calc-line" id="calc-line"></p>
+    </main>
+    <div class="stamp-lg" id="stamp">SAVED<br><span class="stamp-big">—</span><br>★</div>
   </div>
 
-  <section class="card" style="margin-top:14px">
-    <h2 style="margin-top:0">Every category</h2>
-    <table id="cat-table">
-      <thead><tr><th>Category</th><th>Type</th><th class="num">Amount</th><th class="num">Share of income</th></tr></thead>
-      <tbody></tbody>
-    </table>
-    <p class="note">Want to move a number? Open the Budget Planner — it uses this exact same data, and every total there moves as you type.</p>
-  </section>
-</main>
-<footer>One Household, One Month — a working household budget. All figures are one example family month, in US dollars.</footer>
+  <!-- RIGHT: the savings goal notes -->
+  <aside class="goal-notes" id="goal-notes"></aside>
+</div>
+
+<footer class="board-foot">One Household · Nov 2026 · A working household budget — every figure from the same household data, in US dollars.</footer>
+
 <script src="data.js"></script>
 <script>
 const d = window.HOUSEHOLD, M = window.BudgetMath;
 const out = M.totalOut(d), left = M.leftover(d);
 const needs = M.bucketTotal(d, 'needs'), wants = M.bucketTotal(d, 'wants');
+const rate = M.pct(left, d.income);
 
-document.getElementById('summary-cards').innerHTML = [
-  ['Money in', M.money(d.income), 'One month of household income'],
-  ['Money out', M.money(out), d.categories.length + ' spending categories'],
-  ['Left over', M.money(left), 'Goes straight to savings'],
-  ['Savings rate', M.pct(left, d.income).toFixed(1) + '%', 'Of income kept, not spent']
-].map(c => `<div class="card"><div class="label">${c[0]}</div><div class="big">${c[1]}</div><div class="sub">${c[2]}</div></div>`).join('');
+// Left notebook page
+document.getElementById('left-saved-line').textContent = `You saved ${rate.toFixed(1)}% this month!`;
+document.getElementById('left-in').textContent = M.money(d.income);
+document.getElementById('left-out').textContent = M.money(out);
+document.getElementById('left-kept').textContent = M.money(left);
+
+// Receipt lines, all from the one data object
+document.getElementById('rc-income').textContent = M.money(d.income);
+document.getElementById('rc-total-income').textContent = M.money(d.income);
+document.getElementById('rc-expenses').innerHTML = d.categories.map(c =>
+  `<div class="rline"><span>${c.name}</span><span class="leader"></span><span class="amt">${M.money(c.amount)}</span></div>`).join('');
+document.getElementById('rc-total-spent').textContent = M.money(out);
+document.getElementById('rc-net-saved').textContent = M.money(left);
+document.getElementById('calc-line').textContent =
+  `Calculated: SAVINGS RATE = SAVED / INCOME = ${M.money(left)} / ${M.money(d.income)} = ${rate.toFixed(1)}%`;
+document.querySelector('#stamp .stamp-big').textContent = rate.toFixed(1) + '%';
 
 // Donut chart, drawn as SVG stroke segments from the same data.
 const svg = document.getElementById('donut');
@@ -76,9 +112,6 @@ for (const c of d.categories) {
 svg.innerHTML = segs + `<text x="95" y="90" text-anchor="middle" font-size="19" font-weight="bold">${M.money(out)}</text>
   <text x="95" y="112" text-anchor="middle" font-size="12" fill="#7a7264">spent</text>`;
 
-document.getElementById('donut-legend').innerHTML = d.categories.map(c =>
-  `<li><span class="dot" style="background:${c.color}"></span>${c.name}<span class="leader"></span><span class="amt">${M.money(c.amount)}</span></li>`).join('');
-
 const rows = [
   ['Needs', needs, 50, '#4f7a5a'],
   ['Wants', wants, 30, '#d2691e'],
@@ -91,17 +124,23 @@ document.getElementById('rule-bars').innerHTML = rows.map(r => {
     <span>${actual.toFixed(1)}% / ${r[2]}%</span></div>`;
 }).join('');
 document.getElementById('rule-verdict').textContent =
-  `This household runs ${M.pct(needs, d.income).toFixed(1)}% needs, ${M.pct(wants, d.income).toFixed(1)}% wants and keeps ${M.pct(left, d.income).toFixed(1)}%. Needs sit well above the 50% guide — rent, school and insurance are what they are — and the household makes it back by keeping wants far under 30%, so the savings share still lands close to the 20% guide.`;
-
-document.querySelector('#stamp .stamp-big').textContent = M.pct(left, d.income).toFixed(1) + '%';
+  `Needs ${M.pct(needs, d.income).toFixed(1)}%, wants ${M.pct(wants, d.income).toFixed(1)}%, savings ${rate.toFixed(1)}% — needs run heavy (rent, school, insurance), wants stay far under, so savings still land near the 20% guide.`;
 
 const fixedTotal = d.bills.reduce((s, b) => s + b.amount, 0);
 document.getElementById('fixed-note').textContent =
-  `Fixed bills alone commit ${M.money(fixedTotal)} (${M.pct(fixedTotal, d.income).toFixed(1)}% of income) before the month even starts — the Bills page lists every one with its due day.`;
+  `Fixed bills alone commit ${M.money(fixedTotal)} (${M.pct(fixedTotal, d.income).toFixed(1)}% of income) — every one is listed on the Bills page.`;
 
-document.querySelector('#cat-table tbody').innerHTML = d.categories.map(c =>
-  `<tr><td>${c.name}</td><td>${c.bucket === 'needs' ? 'Need' : 'Want'}</td><td class="num">${M.money(c.amount)}</td><td class="num">${M.pct(c.amount, d.income).toFixed(1)}%</td></tr>`).join('');
+// Right-hand goal notes, one per savings goal
+document.getElementById('goal-notes').innerHTML = d.goals.map(g => {
+  const p = M.pct(g.saved, g.target);
+  return `<section class="note-card">
+    <h3>Savings goal: ${g.name}</h3>
+    <p>- Target: ${M.money(g.target)}</p>
+    <p>- Now: ${M.money(g.saved)}</p>
+    <div class="bar"><div style="width:${p.toFixed(1)}%"></div></div>
+    <p>- ${p.toFixed(1)}% saved · ${M.money(g.target - g.saved)} left</p>
+  </section>`;
+}).join('');
 </script>
-</div>
 </body>
 </html>
