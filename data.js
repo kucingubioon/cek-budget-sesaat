@@ -1,35 +1,45 @@
 // One Household, One Month — the single source of truth.
 // Every page reads from this one object, so a number changed in the
 // planner is the same number the dashboard, bills and goals pages use.
+//
+// Dataset: the dashboard scene itself (Lisa's final decision, 27 Nov 2026).
+// The scene is the original October 2024 mockup, used untouched, so the
+// site's data follows the picture: income $4,850 (two paychecks), the ten
+// printed expense categories totalling $3,940, $910 saved (18.8%), and
+// the three printed goal notes. The earlier November 2026 brief dataset
+// is retired — do not restore it.
 window.HOUSEHOLD = {
-  monthLabel: 'November 2026',
+  monthLabel: 'October 2024',
   income: 4850,
+  incomeLines: [
+    { name: 'Paycheck (Oct 15)', amount: 3250 },
+    { name: 'Paycheck (Oct 30)', amount: 1600 }
+  ],
   // bucket: 'needs' or 'wants'. Savings is what is left over.
   categories: [
-    { name: 'Housing',       amount: 1450, bucket: 'needs', color: '#b4552d' },
-    { name: 'Groceries',     amount: 620,  bucket: 'needs', color: '#7d8c5c' },
-    { name: 'Transport',     amount: 310,  bucket: 'needs', color: '#c98f2e' },
-    { name: 'Utilities',     amount: 240,  bucket: 'needs', color: '#5c7d8c' },
-    { name: 'Insurance',     amount: 285,  bucket: 'needs', color: '#8c5c7d' },
-    { name: 'Kids & School', amount: 390,  bucket: 'needs', color: '#4f7a5a' },
-    { name: 'Dining Out',    amount: 260,  bucket: 'wants', color: '#d2691e' },
-    { name: 'Subscriptions', amount: 85,   bucket: 'wants', color: '#a06a8c' },
-    { name: 'Fun',           amount: 180,  bucket: 'wants', color: '#c2a13a' },
-    { name: 'Personal Care', amount: 120,  bucket: 'wants', color: '#7a9e7e' }
+    { name: 'Housing / Rent',      amount: 1600, bucket: 'needs', color: '#b4552d' },
+    { name: 'Groceries',           amount: 680,  bucket: 'needs', color: '#7d8c5c' },
+    { name: 'Utilities',           amount: 240,  bucket: 'needs', color: '#5c7d8c' },
+    { name: 'Transportation / Fuel', amount: 320, bucket: 'needs', color: '#c98f2e' },
+    { name: 'Dining Out',          amount: 280,  bucket: 'wants', color: '#d2691e' },
+    { name: 'Health & Pharmacy',   amount: 150,  bucket: 'needs', color: '#8c5c7d' },
+    { name: 'Kids & School',       amount: 420,  bucket: 'needs', color: '#4f7a5a' },
+    { name: 'Subscriptions',       amount: 95,   bucket: 'wants', color: '#a06a8c' },
+    { name: 'Pet Care',            amount: 85,   bucket: 'wants', color: '#c2a13a' },
+    { name: 'Home & Household',    amount: 70,   bucket: 'wants', color: '#7a9e7e' }
   ],
+  // Fixed bills, derived from the printed categories above.
   bills: [
-    { name: 'Rent',        amount: 1450, due: 1 },
-    { name: 'Insurance',   amount: 285,  due: 5 },
-    { name: 'Internet',    amount: 60,   due: 8 },
-    { name: 'Electricity', amount: 130,  due: 12 },
-    { name: 'Water',       amount: 45,   due: 15 },
-    { name: 'Streaming',   amount: 25,   due: 18 },
-    { name: 'Phone',       amount: 55,   due: 20 }
+    { name: 'Housing / Rent',    amount: 1600, due: 1 },
+    { name: 'Kids & School',     amount: 420,  due: 5 },
+    { name: 'Health & Pharmacy', amount: 150,  due: 8 },
+    { name: 'Utilities',         amount: 240,  due: 12 },
+    { name: 'Subscriptions',     amount: 95,   due: 18 }
   ],
   goals: [
-    { name: 'Emergency Fund', target: 10000, saved: 6200, note: 'Six months of essentials, kept in a separate savings account.' },
-    { name: 'Family Holiday', target: 2400,  saved: 900,  note: 'A week away next summer — flights, a small house, and slow mornings.' },
-    { name: 'Next Car',       target: 6500,  saved: 1300, note: 'A reliable used car when the current one gives up.' }
+    { name: 'Emergency Fund',   target: 2000, saved: 1340, note: 'A starter cushion for surprises, kept in a separate savings account.' },
+    { name: 'New Fridge',       target: 900,  saved: 350,  note: 'The current fridge is loud and leaks — this is its replacement fund.' },
+    { name: 'Dec Holiday Fund', target: 500,  saved: 120,  note: 'A small December holiday fund: gifts, food, and the trip to family.' }
   ]
 };
 

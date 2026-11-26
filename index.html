@@ -7,13 +7,12 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<!-- The dashboard IS the approved design: the original scene, used as-is.
-     Its papers were reprinted in the image itself with this household's
-     real figures (period Nov 2026, the ten brief categories, the three
-     brief goals), so the scene is one static photograph — no overlays.
-     The live figures live in the sheet below and in the Planner. -->
+<!-- The dashboard IS the approved design: Lisa's original scene file,
+     byte for byte, zero edits (final decision 27 Nov 2026). The site's
+     data follows the picture — October 2024, the ten printed categories,
+     the three printed goals — see data.js. -->
 <div class="stage" id="stage">
-  <img src="assets/dashboard-scene.jpg" alt="One Household dashboard: a laptop on a cork board showing the monthly receipt, a notebook page and three savings goal notes">
+  <img src="assets/dashboard-scene.webp" alt="One Household dashboard: a laptop on a cork board showing the monthly receipt, a notebook page and three savings goal notes">
   <a class="hot" style="left:28.6%; top:10.6%; width:7.6%; height:4.6%" href="index.html" aria-label="Dashboard"></a>
   <a class="hot" style="left:49.6%; top:10.6%; width:5.4%; height:4.6%" href="goals.html" aria-label="Goals"></a>
 </div>
@@ -48,7 +47,7 @@
     </div>
   </main>
 </div>
-<footer class="board-foot">One Household · Nov 2026 · A working household budget — every figure from the same household data, in US dollars.</footer>
+<footer class="board-foot">One Household · Oct 2024 · A working household budget — every figure from the same household data, in US dollars.</footer>
 
 <script src="data.js"></script>
 <script>
@@ -92,7 +91,7 @@ document.getElementById('rule-bars').innerHTML = rows.map(r => {
     <span>${actual.toFixed(1)}% / ${r[2]}%</span></div>`;
 }).join('');
 document.getElementById('rule-verdict').textContent =
-  `Needs ${M.pct(needs, d.income).toFixed(1)}%, wants ${M.pct(wants, d.income).toFixed(1)}%, savings ${rate.toFixed(1)}% — needs run heavy (rent, school, insurance), wants stay far under, so savings still land near the 20% guide.`;
+  `Needs ${M.pct(needs, d.income).toFixed(1)}%, wants ${M.pct(wants, d.income).toFixed(1)}%, savings ${rate.toFixed(1)}% — needs run heavy (rent, groceries, school), wants stay far under, so savings still land near the 20% guide.`;
 const fixedTotal = d.bills.reduce((s, b) => s + b.amount, 0);
 document.getElementById('fixed-note').textContent =
   `Fixed bills alone commit ${M.money(fixedTotal)} (${M.pct(fixedTotal, d.income).toFixed(1)}% of income) — every one is listed on the Bills page.`;

@@ -18,7 +18,7 @@
     <a href="bills.html">Bills</a>
     <a href="goals.html" class="active">Goals</a>
   </nav>
-  <span class="month-tag">Nov 2026</span>
+  <span class="month-tag">Oct 2024</span>
 </header>
 <div class="sheet-wrap">
 <main class="sheet crumpled torn">
@@ -41,7 +41,7 @@
   </section>
 </main>
 </div>
-<footer class="board-foot">One Household · Nov 2026 · Goal figures come from the same household data as every other page.</footer>
+<footer class="board-foot">One Household · Oct 2024 · Goal figures come from the same household data as every other page.</footer>
 <script src="data.js"></script>
 <script>
 const d = window.HOUSEHOLD, M = window.BudgetMath;
@@ -70,7 +70,7 @@ function calc() {
   if (remaining <= 0) { out.textContent = `${g.name} is already fully funded.`; return; }
   if (per <= 0) { out.textContent = `Enter a monthly amount to see how long ${g.name} takes.`; return; }
   const months = Math.ceil(remaining / per);
-  const done = new Date(2026, 10 + months, 1); // counting from November 2026
+  const done = new Date(2024, 9 + months, 1); // counting from October 2024
   const when = done.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   out.textContent = `${g.name}: ${M.money(remaining)} to go at ${M.money(per)} a month = ${months} month${months === 1 ? '' : 's'}, done around ${when}.`;
 }

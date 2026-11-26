@@ -18,14 +18,14 @@
     <a href="bills.html" class="active">Bills</a>
     <a href="goals.html">Goals</a>
   </nav>
-  <span class="month-tag">Nov 2026</span>
+  <span class="month-tag">Oct 2024</span>
 </header>
 <div class="sheet-wrap">
 <main class="sheet crumpled torn">
   <h1>Bills &amp; Fixed Costs</h1>
   <p class="lede">The bills that arrive whether the month is good or not.</p>
   <div class="rule-dash"></div>
-  <img class="scene-banner" src="assets/bills-scene.jpg" alt="A crumpled November 2026 calendar page pinned to the cork board">
+  <img class="scene-banner" src="assets/bills-scene.jpg" alt="A crumpled October 2024 calendar page pinned to the cork board">
   <section class="cards" id="bill-summary"></section>
   <div class="grid2">
     <section class="card">
@@ -38,14 +38,14 @@
       <p class="note">Rent, insurance and utilities alone are most of this. Knowing the fixed total first is what makes the rest of the budget honest.</p>
     </section>
     <section class="card">
-      <h2 style="margin-top:0" id="cal-title">November 2026</h2>
+      <h2 style="margin-top:0" id="cal-title">October 2024</h2>
       <div class="calendar" id="calendar"></div>
       <p class="note">Bill days are marked. The heavy week is the first one: rent and insurance land five days apart.</p>
     </section>
   </div>
 </main>
 </div>
-<footer class="board-foot">One Household · Nov 2026 · Bills and amounts are the example month from the same household data as every other page.</footer>
+<footer class="board-foot">One Household · Oct 2024 · Bills and amounts are the example month from the same household data as every other page.</footer>
 <script src="data.js"></script>
 <script>
 const d = window.HOUSEHOLD, M = window.BudgetMath;
@@ -64,7 +64,7 @@ document.querySelector('#bill-table tbody').innerHTML = bills.map(b =>
 document.getElementById('bill-total').textContent = M.money(fixed);
 
 // A real calendar for the example month, built from the actual date.
-const year = 2026, month = 10; // November 2026
+const year = 2024, month = 9; // October 2024
 const firstDow = new Date(year, month, 1).getDay();
 const daysInMonth = new Date(year, month + 1, 0).getDate();
 const byDay = {};
