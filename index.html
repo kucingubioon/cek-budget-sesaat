@@ -8,30 +8,14 @@
 </head>
 <body>
 <!-- The dashboard IS the approved design: the original scene, used as-is.
-     The numbers printed on its papers that belonged to the mockup's own
-     example (period, expense rows, goal notes) are covered by live patches
-     carrying this household's real figures from data.js. The totals printed
-     in the scene itself — $4,850 in, $3,940 out, $910 saved, 18.8% — already
-     are this household's numbers. -->
+     Its papers were reprinted in the image itself with this household's
+     real figures (period Nov 2026, the ten brief categories, the three
+     brief goals), so the scene is one static photograph — no overlays.
+     The live figures live in the sheet below and in the Planner. -->
 <div class="stage" id="stage">
   <img src="assets/dashboard-scene.jpg" alt="One Household dashboard: a laptop on a cork board showing the monthly receipt, a notebook page and three savings goal notes">
   <a class="hot" style="left:28.6%; top:10.6%; width:7.6%; height:4.6%" href="index.html" aria-label="Dashboard"></a>
   <a class="hot" style="left:49.6%; top:10.6%; width:5.4%; height:4.6%" href="goals.html" aria-label="Goals"></a>
-
-  <div class="ov patch-hard flex-c" id="ov-period" style="left:36.0%; top:31.2%; width:23.0%; height:3.6%">PERIOD: NOV 01 — NOV 30, 2026</div>
-
-  <div class="ov patch-paper" style="left:31.4%; top:38.1%; width:30.7%; height:6.0%; padding:.35cqw .45cqw">
-    <div class="rline"><span>Paycheck (Nov 15)</span><span class="leader"></span><span class="amt">$3,250</span></div>
-    <div class="rline"><span>Paycheck (Nov 30)</span><span class="leader"></span><span class="amt">$1,600</span></div>
-  </div>
-
-  <div class="ov patch-hard" id="ov-expenses" style="left:31.0%; top:51.9%; width:31.7%; padding:.3cqw .45cqw"></div>
-
-  <div class="ov patch-paper flex-c" id="ov-month" style="left:11.0%; top:39.6%; width:18.6%; height:3.2%; justify-content:flex-start; padding-left:.4cqw">November 2026 • Monthly Budget •</div>
-
-  <div class="ov flex-c" id="ov-cal" style="left:80.6%; top:15.9%; width:6.4%; height:3.2%; background:#f8f3e8; font-family:Arial, sans-serif; font-size:.92cqw; color:#3d3630">Nov 2026 ⌄</div>
-
-  <div id="ov-notes"></div>
 </div>
 
 <div class="sheet-wrap">
@@ -73,26 +57,7 @@ const out = M.totalOut(d), left = M.leftover(d);
 const needs = M.bucketTotal(d, 'needs'), wants = M.bucketTotal(d, 'wants');
 const rate = M.pct(left, d.income);
 
-// Live patches over the scene's papers, all from the one data object.
-document.getElementById('ov-expenses').innerHTML = d.categories.map(c =>
-  `<div class="rline"><span>${c.name}</span><span class="leader"></span><span class="amt">${M.money(c.amount)}</span></div>`).join('');
-
-const notePos = [
-  'left:71.2%; top:24.2%; width:18.5%; height:23.2%; transform:rotate(-1.2deg); background-color:#f6ebbb',
-  'left:69.7%; top:45.7%; width:17.0%; height:20.0%; transform:rotate(1deg); background-color:#d9eaf8',
-  'left:72.4%; top:64.9%; width:16.8%; height:20.0%; transform:rotate(-.6deg); background-color:#f8e1ec'
-];
-document.getElementById('ov-notes').innerHTML = d.goals.map((g, i) => {
-  const p = M.pct(g.saved, g.target);
-  return `<div class="ov note-ov" style="${notePos[i]}">
-    <h4>Savings goal: ${g.name}</h4>
-    <p>- Target: ${M.money(g.target)}</p>
-    <p>- Now: ${M.money(g.saved)}</p>
-    <p>- ${p.toFixed(1)}% saved · ${M.money(g.target - g.saved)} left</p>
-  </div>`;
-}).join('');
-
-// Live data section below the scene.
+// Live data section below the scene (the scene itself is a static image).
 document.getElementById('summary-cards').innerHTML = [
   ['Money in', M.money(d.income), 'One month of household income'],
   ['Money out', M.money(out), d.categories.length + ' spending categories'],
