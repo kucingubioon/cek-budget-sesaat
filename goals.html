@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Savings Goals — One Household, One Month</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="receipt">
+<header class="top">
+  <h1>Savings Goals</h1>
+  <p>What the left-over money is actually for.</p>
+</header>
+<nav class="pills">
+  <a href="index.html">Dashboard</a>
+  <a href="planner.html">Budget Planner</a>
+  <a href="bills.html">Bills &amp; Fixed Costs</a>
+  <a href="goals.html" class="active">Savings Goals</a>
+</nav>
+<main>
+  <section class="cards" id="goal-cards"></section>
+
+  <section class="card" style="margin-top:14px">
+    <h2 style="margin-top:0">How long until a goal is done?</h2>
+    <p>
+      <label for="goal-pick"><strong>Goal</strong></label>
+      <select id="goal-pick" style="margin:0 10px; padding:7px; font-size:15px; font-family:inherit"></select>
+      <label for="monthly"><strong>Saved per month ($)</strong></label>
+      <input type="number" id="monthly" min="0" step="10" value="300" style="margin-left:10px">
+    </p>
+    <p id="calc-out" style="font-size:19px"></p>
+    <p class="note">This household currently keeps <span id="leftover-note"></span> a month. Split across goals, the emergency fund comes first — it is the one that turns a bad month into a merely annoying one.</p>
+  </section>
+</main>
+<footer>One Household, One Month — goal figures come from the same household data as every other page.</footer>
+<script src="data.js"></script>
+<script>
+const d = window.HOUSEHOLD, M = window.BudgetMath;
+
+document.getElementById('goal-cards').innerHTML = d.goals.map(g => {
+  const p = M.pct(g.saved, g.target);
+  return `<div class="card">
+    <div class="label">${g.name}</div>
+    <div class="big" style="font-size:30px">${M.money(g.saved)} <span style="font-size:17px; color:#7a7264">of ${M.money(g.target)}</span></div>
+    <div class="progress"><div style="width:${p.toFixed(1)}%"></div></div>
+    <div class="sub">${p.toFixed(1)}% saved · ${M.money(g.target - g.saved)} still to go</div>
+    <p class="note">${g.note}</p>
+  </div>`;
+}).join('');
+
+const pick = document.getElementById('goal-pick');
+pick.innerHTML = d.goals.map((g, i) => `<option value="${i}">${g.name}</option>`).join('');
+const monthly = document.getElementById('monthly');
+document.getElementById('leftover-note').textContent = M.money(M.leftover(d));
+
+function calc() {
+  const g = d.goals[+pick.value];
+  const per = Math.max(0, Number(monthly.value) || 0);
+  const remaining = g.target - g.saved;
+  const out = document.getElementById('calc-out');
+  if (remaining <= 0) { out.textContent = `${g.name} is already fully funded.`; return; }
+  if (per <= 0) { out.textContent = `Enter a monthly amount to see how long ${g.name} takes.`; return; }
+  const months = Math.ceil(remaining / per);
+  const done = new Date(2026, 10 + months, 1); // counting from November 2026
+  const when = done.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  out.textContent = `${g.name}: ${M.money(remaining)} to go at ${M.money(per)} a month = ${months} month${months === 1 ? '' : 's'}, done around ${when}.`;
+}
+pick.addEventListener('change', calc);
+monthly.addEventListener('input', calc);
+calc();
+</script>
+</div>
+</body>
+</html>

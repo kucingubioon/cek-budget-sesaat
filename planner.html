@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Budget Planner — One Household, One Month</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="receipt">
+<header class="top">
+  <h1>Budget Planner</h1>
+  <p>Change any number — every total below moves with it.</p>
+</header>
+<nav class="pills">
+  <a href="index.html">Dashboard</a>
+  <a href="planner.html" class="active">Budget Planner</a>
+  <a href="bills.html">Bills &amp; Fixed Costs</a>
+  <a href="goals.html">Savings Goals</a>
+</nav>
+<main>
+  <section class="card">
+    <label for="income"><strong>Monthly income ($)</strong></label>
+    <input type="number" id="income" min="0" step="10" style="margin-left:10px">
+    <button id="preset" style="margin-left:12px">Fill with the 50/30/20 preset</button>
+    <button id="reset" class="secondary">Reset to the example month</button>
+    <p class="note">The preset splits your income 50% needs, 30% wants, 20% savings, keeping each category's share of its group.</p>
+  </section>
+
+  <section class="card" style="margin-top:14px">
+    <table id="plan-table">
+      <thead><tr><th>Category</th><th>Type</th><th style="width:38%">Adjust</th><th class="num">Amount ($)</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section class="cards" style="margin-top:14px" id="plan-summary"></section>
+  <section class="card" style="margin-top:14px">
+    <h2 style="margin-top:0">Needs / Wants / Savings right now</h2>
+    <div id="plan-bars"></div>
+    <p id="plan-warning" class="warn"></p>
+  </section>
+</main>
+<footer>One Household, One Month — planner changes live on this page only; the example month always resets cleanly.</footer>
+<script src="data.js"></script>
+<script>
+const M = window.BudgetMath;
+const original = JSON.parse(JSON.stringify(window.HOUSEHOLD));
+let state = JSON.parse(JSON.stringify(window.HOUSEHOLD));
+
+const tbody = document.querySelector('#plan-table tbody');
+tbody.innerHTML = state.categories.map((c, i) => `
+  <tr>
+    <td>${c.name}</td>
+    <td>${c.bucket === 'needs' ? 'Need' : 'Want'}</td>
+    <td><input type="range" min="0" max="2000" step="5" value="${c.amount}" data-i="${i}" class="slider" aria-label="${c.name} slider"></td>
+    <td class="num"><input type="number" min="0" step="5" value="${c.amount}" data-i="${i}" class="amount" aria-label="${c.name} amount"></td>
+  </tr>`).join('');
+
+const incomeInput = document.getElementById('income');
+incomeInput.value = state.income;
+
+function render() {
+  const out = M.totalOut(state), left = M.leftover(state);
+  const needs = M.bucketTotal(state, 'needs'), wants = M.bucketTotal(state, 'wants');
+  document.getElementById('plan-summary').innerHTML = [
+    ['Total planned', M.money(out), 'Across ' + state.categories.length + ' categories'],
+    ['Left over', M.money(left), left >= 0 ? 'Becomes this month\u2019s savings' : 'Over budget — see below'],
+    ['Savings rate', M.pct(left, state.income).toFixed(1) + '%', 'Target shape: about 20%'],
+    ['Needs / Wants', M.money(needs) + ' / ' + M.money(wants), 'The two spending groups']
+  ].map(c => `<div class="card"><div class="label">${c[0]}</div><div class="big">${c[1]}</div><div class="sub">${c[2]}</div></div>`).join('');
+  const rows = [['Needs', needs, '#4f7a5a'], ['Wants', wants, '#d2691e'], ['Savings', Math.max(left, 0), '#b4552d']];
+  document.getElementById('plan-bars').innerHTML = rows.map(r => {
+    const p = M.pct(r[1], state.income);
+    return `<div class="bar-row"><span>${r[0]}</span><span class="bar-track"><span class="bar-fill" style="display:block;width:${Math.min(p, 100).toFixed(1)}%;background:${r[2]}"></span></span><span>${p.toFixed(1)}%</span></div>`;
+  }).join('');
+  document.getElementById('plan-warning').textContent =
+    left < 0 ? `Careful: the plan spends ${M.money(-left)} more than the income. Trim a category or two.` : '';
+}
+
+function syncFrom(i, value) {
+  const v = Math.max(0, Math.round(Number(value) || 0));
+  state.categories[i].amount = v;
+  document.querySelectorAll(`.amount[data-i="${i}"]`)[0].value = v;
+  document.querySelectorAll(`.slider[data-i="${i}"]`)[0].value = Math.min(v, 2000);
+  render();
+}
+document.querySelectorAll('.amount').forEach(el =>
+  el.addEventListener('input', e => syncFrom(+e.target.dataset.i, e.target.value)));
+document.querySelectorAll('.slider').forEach(el =>
+  el.addEventListener('input', e => syncFrom(+e.target.dataset.i, e.target.value)));
+incomeInput.addEventListener('input', e => { state.income = Math.max(0, Number(e.target.value) || 0); render(); });
+
+document.getElementById('preset').addEventListener('click', () => {
+  const targets = { needs: Math.round(state.income * 0.5), wants: Math.round(state.income * 0.3) };
+  for (const bucket of ['needs', 'wants']) {
+    const group = state.categories.filter(c => c.bucket === bucket);
+    const now = group.reduce((s, c) => s + c.amount, 0) || 1;
+    // Round each share, then hand the rounding difference to the biggest
+    // category so the group lands on its target to the dollar.
+    let assigned = 0;
+    for (const c of group) { c.amount = Math.round(c.amount / now * targets[bucket]); assigned += c.amount; }
+    const biggest = group.reduce((a, b) => (b.amount > a.amount ? b : a), group[0]);
+    biggest.amount += targets[bucket] - assigned;
+  }
+  state.categories.forEach((c, i) => {
+    document.querySelectorAll(`.amount[data-i="${i}"]`)[0].value = c.amount;
+    document.querySelectorAll(`.slider[data-i="${i}"]`)[0].value = Math.min(c.amount, 2000);
+  });
+  render();
+});
+document.getElementById('reset').addEventListener('click', () => {
+  state = JSON.parse(JSON.stringify(original));
+  incomeInput.value = state.income;
+  state.categories.forEach((c, i) => {
+    document.querySelectorAll(`.amount[data-i="${i}"]`)[0].value = c.amount;
+    document.querySelectorAll(`.slider[data-i="${i}"]`)[0].value = c.amount;
+  });
+  render();
+});
+render();
+</script>
+</div>
+</body>
+</html>

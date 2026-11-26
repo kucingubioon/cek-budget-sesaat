@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bills &amp; Fixed Costs — One Household, One Month</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="receipt">
+<header class="top">
+  <h1>Bills &amp; Fixed Costs</h1>
+  <p>The bills that arrive whether the month is good or not.</p>
+</header>
+<nav class="pills">
+  <a href="index.html">Dashboard</a>
+  <a href="planner.html">Budget Planner</a>
+  <a href="bills.html" class="active">Bills &amp; Fixed Costs</a>
+  <a href="goals.html">Savings Goals</a>
+</nav>
+<main>
+  <section class="cards" id="bill-summary"></section>
+  <div class="grid2">
+    <section class="card">
+      <h2 style="margin-top:0">This month's bills</h2>
+      <table id="bill-table">
+        <thead><tr><th>Bill</th><th class="num">Due</th><th class="num">Amount</th></tr></thead>
+        <tbody></tbody>
+        <tfoot><tr><th>Total fixed costs</th><th></th><th class="num" id="bill-total"></th></tr></tfoot>
+      </table>
+      <p class="note">Rent, insurance and utilities alone are most of this. Knowing the fixed total first is what makes the rest of the budget honest.</p>
+    </section>
+    <section class="card">
+      <h2 style="margin-top:0" id="cal-title">November 2026</h2>
+      <div class="calendar" id="calendar"></div>
+      <p class="note">Bill days are marked. The heavy week is the first one: rent and insurance land five days apart.</p>
+    </section>
+  </div>
+</main>
+<footer>One Household, One Month — bills and amounts are the example month from the same household data as every other page.</footer>
+<script src="data.js"></script>
+<script>
+const d = window.HOUSEHOLD, M = window.BudgetMath;
+const bills = [...d.bills].sort((a, b) => a.due - b.due);
+const fixed = bills.reduce((s, b) => s + b.amount, 0);
+
+document.getElementById('bill-summary').innerHTML = [
+  ['Total fixed costs', M.money(fixed), bills.length + ' bills every month'],
+  ['Share of income', M.pct(fixed, d.income).toFixed(1) + '%', 'Committed before the month starts'],
+  ['First bill', bills[0].name + ', day ' + bills[0].due, M.money(bills[0].amount)],
+  ['Last bill', bills[bills.length - 1].name + ', day ' + bills[bills.length - 1].due, M.money(bills[bills.length - 1].amount)]
+].map(c => `<div class="card"><div class="label">${c[0]}</div><div class="big" style="font-size:28px">${c[1]}</div><div class="sub">${c[2]}</div></div>`).join('');
+
+document.querySelector('#bill-table tbody').innerHTML = bills.map(b =>
+  `<tr><td>${b.name}</td><td class="num">${b.due}</td><td class="num">${M.money(b.amount)}</td></tr>`).join('');
+document.getElementById('bill-total').textContent = M.money(fixed);
+
+// A real calendar for the example month, built from the actual date.
+const year = 2026, month = 10; // November 2026
+const firstDow = new Date(year, month, 1).getDay();
+const daysInMonth = new Date(year, month + 1, 0).getDate();
+const byDay = {};
+for (const b of bills) (byDay[b.due] = byDay[b.due] || []).push(b);
+let cells = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(x => `<div class="dow">${x}</div>`).join('');
+for (let i = 0; i < firstDow; i++) cells += '<div class="day empty"></div>';
+for (let day = 1; day <= daysInMonth; day++) {
+  const marks = (byDay[day] || []).map(b => `<span class="bill">${b.name} ${M.money(b.amount)}</span>`).join('');
+  cells += `<div class="day"><strong>${day}</strong>${marks}</div>`;
+}
+document.getElementById('calendar').innerHTML = cells;
+</script>
+</div>
+</body>
+</html>
